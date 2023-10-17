@@ -250,27 +250,3 @@ Q5)
 #### Array Manipulation
 1. Flattening (다차원 배열을 1차원 배열로 전환) `np.ndarray.ravel()`
 2. Reshaping (배열을 원하는 Shape로 변경) `np.ndarray.reshape()`
-
-## ML Basic
-
-ML의 기본 프로세스
-1. Set Hypothesis: ML은 학습하고자 하는 가설 (모델) 을 수학적 표현식으로 나타냄
-    - 일련의 현상 (상황) 을 설명하기 위해 설정된 가정 (논리적 명제, 수식)
-2. Set Cost function (Loss function)
-    - 설정한 가설을 통한 예측값과 실제값의 오차를 평가하는 함수
-3. Set Learning algorithm and Train a model
-    - 학습 알고리즘의 목적은 Cost의 최소화
-    - Hypothesis가 문제를 해결하기 위한 모델과 유사하도록 학습 진행
-
-
-### Linear Regression
-Data를 잘 표현하는 직선의 방정식을 찾는 것
-1. Hypothesis: Data를 대표하는 Hypothesis를 직선의 방정식으로 설정
-    - $y=Ax+B$ (A: gradient, B: bias)
-2. Cost function
-    - Error 정의 (입력에 대한 Hypothesis의 결과와 Label의 차이)
-    - 평균 오차 (Average Error)? 제곱의 평균 오차 (Mean Squared Error)?
-3. Learning algorithm
-    - Cost가 최소가 되도록 Hypothesis의 parameter를 조정하는 것.
-
-
