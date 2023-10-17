@@ -1,6 +1,6 @@
 # Day 1
 
-## Introduction to ML/DL
+## 1. Introduction to ML/DL
 
 ### AI
 - AI란
@@ -89,7 +89,7 @@ Perceptron
 
 #### Google Colaboratory를 활용한 실습
 
-### Appendix: NumPy
+## Appendix: NumPy
 
 06년에 출시된 Python 수치해석용 라이브러리로 ML/DL에 필요한 다양한 기능 제공
 - NumPy의 ndarray (N-dimensional array)
@@ -104,7 +104,7 @@ Perceptron
 |Vectorizing 연산 불가능|Vectorizing 연산 가능|
 
 
-#### np.ndarray
+### np.ndarray
 
 ```python
 import numpy as np
@@ -146,7 +146,7 @@ c_like = np.empty_like(c)
 
 ```
 
-#### datatype
+### datatype
 
 |Datatype|Example|
 |---|---|
@@ -159,13 +159,13 @@ c_like = np.empty_like(c)
 |object|object (Container 자료형들은 object로 취급함)|
 
 
-#### Indexing and Slicing
+### Indexing and Slicing
 
 |Indexing|Slicing|
 |---|---|
 |Element의 Index number를 사용함. 다차원인 경우 Comma로 차원 구분|Element의 인덱스 번호와 Colon을 함께 사용. `start:end:step`|
 
-#### Dimension reduction
+### Dimension reduction
 배열의 차원을 감소시키는 연산
 
 `np.sum(), np.ndarray.sum()`
@@ -220,7 +220,7 @@ x.std()
 
 ```
 
-#### Element-wise operation and broadcast
+### Element-wise operation and broadcast
 - Vectorizing: 루프를 사용하지 않고 배열의 각 요소를 계산. 코드 가독성이 높아지고 성능도 좋아짐.
 - Broadcast: 서로 다른 Shape을 가진 배열의 산술 연산을 위해 NumPy가 가진 규칙
 
@@ -247,6 +247,6 @@ Q5)
 ```
 
 
-#### Array Manipulation
+### Array Manipulation
 1. Flattening (다차원 배열을 1차원 배열로 전환) `np.ndarray.ravel()`
 2. Reshaping (배열을 원하는 Shape로 변경) `np.ndarray.reshape()`

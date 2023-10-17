@@ -1,6 +1,6 @@
 # Day 2
 
-## ML Basic
+## 2. ML Basic
 
 ML의 기본 프로세스
 1. Set Hypothesis: ML은 학습하고자 하는 가설 (모델) 을 수학적 표현식으로 나타냄
@@ -22,23 +22,20 @@ Data를 잘 표현하는 직선의 방정식을 찾는 것
 3. Learning algorithm
     - Cost가 최소가 되도록 Hypothesis의 parameter를 조정하는 것.
 
-## Gradient descent: 경사하강법
-
-곡선의 경사를 따라가며 최저점을 탐색하는 알고리즘
+Gradient descent: 경사하강법. 선의 경사를 따라가며 최저점을 탐색하는 알고리즘
 1. 임의의 Parameter 값에서 시작
 2. Parameter를 조정 (Cost가 줄어들 수 있는 방향으로 변경)
     - Cost function의 기울기를 기준으로 조정
     - 기울기는 미분을 통해 얻어냄 (Parameter별 편미분)
 3. Cost가 최저점에 도달할 때까지 반복
 
-### Learning rate: 학습율
-성능 향상을 위한 Parameter update 시 변화의 정도를 조절하는 상수
+Learning rate: 학습율. 성능 향상을 위한 Parameter update 시 변화의 정도를 조절하는 상수
 - Cost function의 기울기를 기준으로 Parameter를 조정
     - Learning rate이 너무 크다면? Cost가 발산하게 될 수 있음
     - Learning rate이 너무 작다면? 학습 과정이 너무 오래 걸림
 - 적절히 작은 값을 Learning rate으로 선택하는 것이 중요하다.
 
-### Convex function and Local/Global Minima
+Convex function and Local/Global Minima
 1. Convex function의 경우 Local minimum == Global minimum
     - Gradient descent 방식으로 Global minimum에 도달할 수 있음
 2. Non-convex function의 경우 Local minimum != Global minimum
@@ -92,12 +89,12 @@ for cnt in range(epochs+1):
     B -= learning_rate * grad_b
 ```
 
-## Example: Blood Pressure Prediction Model
+### Example: Blood Pressure Prediction Model
 1. Set hypothesis
 2. Set cost function
 3. Train
 
-### Naive implementation
+#### Naive implementation
 
 ```python
 x_input = tf.constant([25, 25, 25, 35, ..., 73], dtype=tf.float32)
@@ -128,7 +125,7 @@ print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
 ```
 
 
-### TF-based implementation
+#### TF-based implementation
 1. Set hypothesis and cost function (H(x) and Cost())
 2. Set optimizer (모델을 학습하기 위해 사용하는 Class)
 3. `optimizer.minimize(loss, var_list)`
@@ -171,10 +168,7 @@ def Predict(x):
 
 age = tf.constant([50.])
 print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
-
 ```
-
-## NumPy 코드와 TensorFlow 코드
 
 |Category|NumPy|TensorFlow|
 |---|---|---|
@@ -184,7 +178,87 @@ print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
 
 ## Multi-variable Linear Regression
 
-``````
+### NumPy Implementation
+
+```python
+x_input, labels = np.array(...), np.array(...)
+
+W, B = np.random.normal(size=(2, 1)), np.random.normal(size=())
+
+def Hypothesis(X): return np.matmul(X, W) + B
+def Cost(): return np.mean((Hypothesis(x_input) - labels)**2)
+def Gradient():
+    global W, B
+    pres_W, grad_W = W.copy(), np.zeros_like(W)
+    delta = 5e-7
+
+    for idx in range(W.size):
+        W[idx, 0] = pres_W[idx, 0] + delta
+        cost_p = Cost()
+
+        W[idx, 0] = pres_W[idx, 0] - delta
+        cost_m = Cost()
+
+        grad_W[idx, 0] = (cost_p - cost_m)/(2*delta)
+        w[idx, 0] = pres_W[idx, 0]
+
+    pres_b = B
+    B = pres_b + delta
+    cost_p = Cost()
+
+    B = pres_b - delta
+    cost_m = Cost()
+    grad_B = (cost_p-cost_m)/(2*delta)
+    B = pres_b
+
+    return grad_W, grad_B
+
+epochs = 1e6
+learning_rate = 1e-4
+
+training_idx = np.arange(0, epochs+1, 1)
+cost_graph = np.zeros(epochs+1)
+
+for cnt in range(0, epochs+1):
+    cost_graph[cnt] = Cost()
+    if cnt % (epochs//20) == 0:
+        print("[{}]cost={},W=[[{}][{}]],B={}".format(cnt, cost_graph[cnt], W[0,0], W[1,0], B))
+
+    grad_W, grad_B = Gradient()
+    W -= learning_rate * grad_W
+    B -= learning_rate * grad_B
+
+# Plot
+plt.title("Cost/Epochs graph")
+plt.xlabel("Epochs")
+plt.ylabel("Cost")
+plt.plot(training_idx, cost_graph)
+plt.xlim(0, epochs)
+plt.grid(True)
+plt.semilogy() # set y-axis scale to log-scale
+plt.show()
+```
+
+### TF Implementation (with Data Normalization)
+Cost 값의 발산으로 Learning rate을 낮게 설정해야 하는 문제를 개선
+
+```python
+x_input_org = x_input
+x_min, x_max = np.min(x_input, axis=0), np.max(x_input, axis=0)
+x_input = (x_input-x_min)/(x_max-x_min)
+...
+
+# Prediction
+## input_value: [0, 1]
+## output_value: original_value
+def predict(x): return Hypothesis((x-x_min)/(x_max-x_min))
+```
+
+## Multi-variable Multi-output Linear Regression
+여러 개의 입력에 따른 여러 개의 출력을 예측할 때 사용 가능
+- 나이와 BMI가 입력하면, 수축기 혈압과 이완기 혈압을 예측
+
+
 
 ## Appendix: TensorFlow
 Google이 2015년 11월에 공개한 End-to-end 오픈소스 머신러닝 플랫폼. Tensor를 포함한 연산을 정의하고 실행하는 프레임워크.
@@ -236,14 +310,11 @@ for tensor in list_constant:
 
 ```
 
-### tf.dtype
-Tensor의 요소 타입
-|Type|Description|
+|tf.dtype|Description|
 |---|---|
-|tf.float{16, 32, 64}||
-|tf.bfloat16||
-|tf.
-||
-|||
-|||
-|||
+|tf.float{16, 32, 64}|{half, single, double}-precision floating-point|
+|tf.bfloat16|16-bit truncated floating-point|
+|tf.int{8, 16, 32, 64}|signed integer|
+|tf.uint{8, 16, 32, 64}|unsigned integer|
+|tf.bool|Boolean|
+|tf.string|String|
