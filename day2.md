@@ -2,7 +2,7 @@
 
 ## 2. ML Basic
 
-ML의 기본 프로세스
+### ML의 기본 프로세스
 1. Set Hypothesis: ML은 학습하고자 하는 가설 (모델) 을 수학적 표현식으로 나타냄
     - 일련의 현상 (상황) 을 설명하기 위해 설정된 가정 (논리적 명제, 수식)
 2. Set Cost function (Loss function)
@@ -12,7 +12,7 @@ ML의 기본 프로세스
     - Hypothesis가 문제를 해결하기 위한 모델과 유사하도록 학습 진행
 
 
-### Linear Regression
+### 1) Linear Regression
 Data를 잘 표현하는 직선의 방정식을 찾는 것
 1. Hypothesis: Data를 대표하는 Hypothesis를 직선의 방정식으로 설정
     - $y=Ax+B$ (A: gradient, B: bias)
@@ -22,23 +22,25 @@ Data를 잘 표현하는 직선의 방정식을 찾는 것
 3. Learning algorithm
     - Cost가 최소가 되도록 Hypothesis의 parameter를 조정하는 것.
 
-Gradient descent: 경사하강법. 선의 경사를 따라가며 최저점을 탐색하는 알고리즘
+#### Gradient descent
+경사하강법. 선의 경사를 따라가며 최저점을 탐색하는 알고리즘
 1. 임의의 Parameter 값에서 시작
 2. Parameter를 조정 (Cost가 줄어들 수 있는 방향으로 변경)
     - Cost function의 기울기를 기준으로 조정
     - 기울기는 미분을 통해 얻어냄 (Parameter별 편미분)
 3. Cost가 최저점에 도달할 때까지 반복
 
-Learning rate: 학습율. 성능 향상을 위한 Parameter update 시 변화의 정도를 조절하는 상수
+#### Learning rate
+학습율. 성능 향상을 위한 Parameter update 시 변화의 정도를 조절하는 상수
 - Cost function의 기울기를 기준으로 Parameter를 조정
     - Learning rate이 너무 크다면? Cost가 발산하게 될 수 있음
     - Learning rate이 너무 작다면? 학습 과정이 너무 오래 걸림
 - 적절히 작은 값을 Learning rate으로 선택하는 것이 중요하다.
 
-Convex function and Local/Global Minima
-1. Convex function의 경우 Local minimum == Global minimum
+#### Convex function and Local/Global Minima
+1. Convex function의 경우 `Local minimum == Global minimum`
     - Gradient descent 방식으로 Global minimum에 도달할 수 있음
-2. Non-convex function의 경우 Local minimum != Global minimum
+2. Non-convex function의 경우 `Local minimum != Global minimum`
     - Gradient descent 방식이 적절할까?
 
 ```python
@@ -89,17 +91,19 @@ for cnt in range(epochs+1):
     B -= learning_rate * grad_b
 ```
 
-### Example: Blood Pressure Prediction Model
+#### Example: Blood Pressure Prediction Model
 1. Set hypothesis
 2. Set cost function
 3. Train
 
-#### Naive implementation
+**NumPy-based implementation**
 
 ```python
+# Input data
 x_input = tf.constant([25, 25, 25, 35, ..., 73], dtype=tf.float32)
 labels = tf.constant([118, 125, 130, ... 138], dtype=tf.float32)
 
+# Set Hypothesis, Cost function, and Gradient descent algorithm
 def Hypothesis(x): 
     return W*x+B
 def Cost(): 
@@ -108,6 +112,7 @@ def Gradient(x, y):
     # Partial derivative of W and B respectively
     return np.mean(x*(x*W+(B-y))), np.mean((W*x-y+B))
 
+# Training
 epochs=100
 learning_rate=.01
 for cnt in range(epochs+1):
@@ -118,18 +123,18 @@ for cnt in range(epochs+1):
     W -= learning_rate * grad_w
     B -= learning_rate * grad_b
 
+# Prediction
 def Predict(x): return Hypothesis(x)
-
 age = np.array([50.])
 print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
 ```
 
-
-#### TF-based implementation
+**TF-based implementation**
 1. Set hypothesis and cost function (H(x) and Cost())
 2. Set optimizer (모델을 학습하기 위해 사용하는 Class)
-3. `optimizer.minimize(loss, var_list)`
-    - loss는 arguments가 없어야 하며, var_list는 최적화할 변수 목록을 리스트나 튜플로 전달 
+    - SGD (Stochastic Gradient Descent), Adam, ...
+3. `optimizer.minimize(loss_function, var_list)`
+    - loss_function는 arguments가 없어야 하며, var_list는 최적화할 변수 목록을 리스트나 튜플로 전달 `[W, B]` 
     - 내부적으로 `tf.GradientTape`과 `apply_gradient()`를 사용한다.
 4. Predict
 
@@ -140,19 +145,18 @@ import tensorflow as tf
 print("NumPy version: {}".format(np.__version__))
 print("TensorFlow version: {}".format(tf.__version__))
 
+# Input data
 x_input = tf.constant([25, 25, 25, 35, ..., 73], dtype=tf.float32)
 labels = tf.constant([118, 125, 130, ... 138], dtype=tf.float32)
 
-# Parameters
+## Parameters
 W = tf.Variable(tf.random.normal(()), dtype=tf.float32)
 B = tf.Variable(tf.random.normal(()), dtype=tf.float32)
 
-def Hypothesis(x): # Hypothesis
-    return x*W+B
-def Cost(): # Cost (Loss) function
-    return tf.reduce_mean(tf.square(Hypothesis(x_input)-labels))
+def Hypothesis(x): return x*W+B
+def Cost(): return tf.reduce_mean(tf.square(Hypothesis(x_input)-labels))
 
-# Hyper-parameters
+# Training
 epochs = 150000
 learning_rate=0.0003
 optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate)
@@ -163,12 +167,12 @@ for cnt in range(1, epochs+1):
 
     optimizer.minimize(Cost, [W, B])
 
-def Predict(x):
-    return Hypothesis(x)
-
+# Prediction
+def Predict(x): return Hypothesis(x)
 age = tf.constant([50.])
 print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
 ```
+**NumPy vs TF-based implementation**
 
 |Category|NumPy|TensorFlow|
 |---|---|---|
@@ -176,9 +180,10 @@ print("{} Years : {:>7.4}mmHg".format(age[0], Predict(age)[0]))
 |구현|np.mean()과 같은 method 사용|tf.reduce_mean(), tf.square()와 같은 method 사용|
 |학습|직접 구현|제공되는 Optimizer.minimize 사용|
 
-## Multi-variable Linear Regression
+### 2) Multi-variable Linear Regression
+입력이 여러 개 $x_{1}, x_{2}, ..., x_{i}$
 
-### NumPy Implementation
+**NumPy implementation**
 
 ```python
 x_input, labels = np.array(...), np.array(...)
@@ -239,8 +244,8 @@ plt.semilogy() # set y-axis scale to log-scale
 plt.show()
 ```
 
-### TF Implementation (with Data Normalization)
-Cost 값의 발산으로 Learning rate을 낮게 설정해야 하는 문제를 개선
+**TF Implementation (with Data Normalization)**
+Data Normalization은 Cost 값의 발산으로 Learning rate을 낮게 설정해야 하는 문제를 개선
 
 ```python
 x_input_org = x_input
@@ -254,11 +259,20 @@ x_input = (x_input-x_min)/(x_max-x_min)
 def predict(x): return Hypothesis((x-x_min)/(x_max-x_min))
 ```
 
-## Multi-variable Multi-output Linear Regression
-여러 개의 입력에 따른 여러 개의 출력을 예측할 때 사용 가능
+### 3) Multi-variable Multi-output Linear Regression
+`여러 개의 입력`에 따른 `여러 개의 출력`을 예측할 때 사용 가능
 - 나이와 BMI가 입력하면, 수축기 혈압과 이완기 혈압을 예측
+- $f(x_1, x_2, ..., x_n) = y_1, y_2, ..., y_m$
+    - input_sample_num $N$
+    - sample_input_dim $n$
+    - sample_output_dim $m$
 
+$X\in R^{N\times n}, W\in R^{n\times m}, b\in R^{m}, Y\in R^{N\times m}$
 
+```python
+W = tf.Variable(tf.random.normal((2, 2)), dtype=tf.float32)
+B = tf.Variable(tf.random.normal((2,)), dtype=tf.float32)
+```
 
 ## Appendix: TensorFlow
 Google이 2015년 11월에 공개한 End-to-end 오픈소스 머신러닝 플랫폼. Tensor를 포함한 연산을 정의하고 실행하는 프레임워크.
@@ -291,10 +305,10 @@ Tensor
 
 |Rank|Description|Example|Shape|
 |---|---|---|---|
-|0|Scalar|1, -4, .142|()|
-|1|Vector|[1., 2., 3.]|(3, )|
-|2|Matrix|[[1., 2., 3.], [4., 5., 6.]]|(2, 3)|
-|3|3-Tensor|[[[1., 2., 3.]], [[4., 5., 6.]]]|(2, 1, 3)|
+|0|Scalar (Magnitude)|1, -4, .142|()|
+|1|Vector (Magnitude and direction)|[1., 2., 3.]|(3, )|
+|2|Matrix (Table of number)|[[1., 2., 3.], [4., 5., 6.]]|(2, 3)|
+|3|3-Tensor (Cube)|[[[1., 2., 3.]], [[4., 5., 6.]]]|(2, 1, 3)|
 
 ```python
 import tensorflow as tf
@@ -318,3 +332,30 @@ for tensor in list_constant:
 |tf.uint{8, 16, 32, 64}|unsigned integer|
 |tf.bool|Boolean|
 |tf.string|String|
+
+Tensor with higher Ranks
+- Batch operation에서 Tensor의 first dimension은 batch_dim
+- last dimension은 num_of_channel
+- 나머지 dimension은 space dimension
+- `(batch_size, height, width, channel)`
+
+### tf.Variable
+Operation 실행에 의해 값이 조정되는 Tensor
+`tf.Variable(initial_value=None, trainable=True, dtype=None, ...)`
+
+|Name|Description|
+|---|---|
+|initial_value|Variable의 초깃값|
+|trainable|True일 경우, Optimizer 사용 시 해당 변수를 Training|
+|dtype|Variable의 Type|
+
+**Variable의 초깃값 설정에 사용할 수 있는 함수**
+
+|Name|Description|
+|---|---|
+|tf.zeros(shape, dtype)|Shaped tensor with zero-values|
+|tf.ones(shape, dtype|Shaped tensor with one-value|
+|tf.eye(num_rows, num_columns, dtype)|identity matrix|
+|tf.random.normal(shape, mean, stddev, dtype, seed, name)|Following Normal distribution|
+|tf.random.truncated_normal(shape, mean, stddev, dtype, seed, name)|Following Truncated normal distribution|
+|tf.random.uniform(shape, minval, maxval, dtype, seed, name)|Following uniform distribution|
