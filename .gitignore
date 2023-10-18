@@ -2,4 +2,4 @@
 *.pdf
 
 deploy_data/
-LAB_01_CSV_file_Linear_Regression/
+*LAB_*/
