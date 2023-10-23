@@ -5,12 +5,13 @@
 ### Week 1
 |Day|10/16|10/17|10/18|10/19|10/20|
 |---|---|---|---|---|---|
-|**Topic**|Introduction to ML/DL|Linear Regression|Classification|DL Basic|CNN|
+|**Topic**|Introduction to ML/DL, NumPy, and TensorFlow|Linear Regression|Logistic/Softmax Classification|MLP|CNN|
 |**Contents**||||||
 
 ### Week 2
 |Day|10/23|10/24|10/25|10/26|10/27|
-|---|---|---|---|---|---|
+|---|---|---|---|---|---
+|**Topic**|Advanced CNN||||||
 |**Contents**||||||
 
 ### Week 3
