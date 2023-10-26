@@ -69,3 +69,41 @@ Convolution layer를 Sparse하게 연결하고 행렬 연산은 Dense하게 처�
 - `Inception.v4`는 직전 버전을 변형 및 실험
 
 ### ResNet
+VGG-19 구조에 Convolution layer와 Shortcut을 추가함
+
+#### Residual block
+- Layer가 많을 수록 무조건 성능이 좋아지진 않는다: Vanishing/Exploding gradient
+- 기존 방식 (input `x` and output `H(X)`)
+    - `H(x)`가 학습 대상
+- Residual block (input `x` and output `H(x) = F(x) + x`)
+    - 입력값에 출력값을 더해줄 수 있는 Shortcut을 추가
+    - `F(x) = H(x) - x = Residual (잔차)`가 학습 대상
+    - Layer가 많아져도 최적화가 쉬워지고 정확도가 향상됨
+
+### WideResNet, DenseNet, PyramidNet
+
+|Model|Character||
+|---|---|---|
+|ResNet|Layer를 깊게|Residual block|
+|WideResNet|Layer를 넓게|깊이 증가보다 Residual block의 개선|
+|DenseNet|Layer 간 Skip connection을 많이|Feedforward 방식으로 각 Layer를 다른 모든 Layer에 연결|
+|PyramidNet|Layer 간 Feature map 변화|모든 Layer에서 #Channel을 변경하여 Channel이 급변하면서 발생할 수 있는 성능 저하를 방지|
+
+### CAM (Class Activation Map)
+- CNN 모델은 Labeled data를 활용한 Supervised Learning (Labeling... expensive!)
+    - 일반적으로 Flatten에서 Fully-connected layer로 넘기는 순간 Filter가 갖는 위치 정보가 소실됨..
+- Model이 이미지의 어떤 부분을 보고 분류하는지 알 수 있게 시각화
+- 위치 정보 보존을 위해 Flatten 대신, GAP (Global Average Pooling) 사용
+    - 성능 저하가 크지 않고, 추가 Convolution layer를 추가하여 성능 저하 해소 가능
+- Label만으로 학습시켰지만 Classification은 물론 객체 위치도 파악 가능
+    - Weakly supervised learning
+
+#### Limitation
+1. Flatten을 GAP으로 대체해야 함: 처음부터 GAP 구조였다면 대체 불필요
+2. GAP 직전의 Convolution layer를 통해서만 CAM을 얻을 수 있음: 다른 Layer는 불가
+3. GAP 뒷 단 Dense layer의 Weight update를 위해, Fine-tuning이나 Re-training 과정이 필요: 처음부터 GAP 구조였다면 학습 불필요
+
+#### Gradient-weighted CAM
+- GAP에 의존하지 않고 Gradient를 이용함
+- Flatten을 GAP으로 대체할 필요 없음
+- GAP 직전 Convolution layer뿐만 아니라 다른 위치의 Convolution layer에도 적용할 수 있음

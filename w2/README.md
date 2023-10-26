@@ -1,4 +1,6 @@
-# Week 2 Exam
+# Week 2 Test
+- 9:25 ~ 11:30 시험 봄
+- 시험범위는 RNN부터 Advanced CNN까지
 
 ## Contents
 1. Embedding
@@ -10,3 +12,6 @@
 2. Image Augmentation
 
 3. Grad-CAM
+
+4. Autoencoder
+    - `.get_weights()`
