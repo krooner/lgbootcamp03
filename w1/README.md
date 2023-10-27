@@ -1,4 +1,5 @@
 # Week 1 Test
+100/100
 
 ## Examples
 1. Digit Sign Classification *
