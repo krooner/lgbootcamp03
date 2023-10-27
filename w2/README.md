@@ -1,6 +1,10 @@
 # Week 2 Test
 - 9:25 ~ 11:30 시험 봄
 - 시험범위는 RNN부터 Advanced CNN까지
+- 3문제 나옴
+    1. RNN: IMDB
+    2. CNN: Fine-tuning
+    3. CNN: Class Activation Map
 
 ## Contents
 1. Embedding
@@ -12,6 +16,3 @@
 2. Image Augmentation
 
 3. Grad-CAM
-
-4. Autoencoder
-    - `.get_weights()`
