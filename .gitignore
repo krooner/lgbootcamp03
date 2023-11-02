@@ -3,3 +3,5 @@
 
 deploy_data/
 *LAB*/
+
+*.pyc
