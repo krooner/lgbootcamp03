@@ -7,7 +7,7 @@ import tflite_runtime.interpreter as tflite
 from utils.inference import detect_faces, draw_text, draw_bounding_box, apply_offsets, load_detection_model
 from utils.preprocessor import preprocess_input
 
-model_path = "/home/pi/face_classification/trained_models/aihub_trans_aug.tflite"
+model_path = "../trained_models/aihub_trans_aug.tflite"
 interpreter = tflite.Interpreter(model_path=model_path)
 interpreter.allocate_tensors()
 
