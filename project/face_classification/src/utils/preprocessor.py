@@ -1,6 +1,6 @@
 import numpy as np
-#from scipy.misc import imread, imresize
-from imageio import imread
+# from scipy.misc import imread, imresize
+# from imageio import imread
 from PIL import Image
 
 def preprocess_input(x, v2=True):
@@ -12,8 +12,8 @@ def preprocess_input(x, v2=True):
     return x
 
 
-def _imread(image_name):
-        return imread(image_name)
+# def _imread(image_name):
+#         return imread(image_name)
 
 
 def _imresize(image_array, size):
