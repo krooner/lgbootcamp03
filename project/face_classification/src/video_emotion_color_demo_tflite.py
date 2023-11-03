@@ -3,7 +3,7 @@ import time
 import cv2
 import numpy as np
 import tflite_runtime.interpreter as tflite
-
+from collections import Counter
 from utils.inference import detect_faces, draw_text, draw_bounding_box, apply_offsets, load_detection_model
 from utils.preprocessor import preprocess_input
 
@@ -46,8 +46,25 @@ emotion_window = []
 # starting video streaming
 cv2.namedWindow('window_frame')
 video_capture = cv2.VideoCapture(0)
+video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+prev_time = time.time()
+
+# first_detection_bool = False
+detection_results = []
+first_detection_time = None
+detection_duration = 10.
+
 while True:
-    # time.sleep(1)
+    
+    if first_detection_time != None:
+        if time.time() - first_detection_time > detection_duration:
+            print("Detection complete.")
+            print(Counter(detection_results))
+            print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
+            break
+
     ret, bgr_image = video_capture.read()
     if ret != True:
         print("Video capture Error.")
@@ -58,6 +75,8 @@ while True:
     faces = detect_faces(face_detection, gray_image)
 
     for face_coordinates in faces:
+        if first_detection_time == None: first_detection_time = time.time()
+
         x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
         gray_face = gray_image[y1:y2, x1:x2]
         try:
@@ -79,6 +98,8 @@ while True:
         emotion_label_arg = np.argmax(output_data)
         emotion_text = emotion_labels[emotion_label_arg]
         print(emotion_text)
+        
+        detection_results.append(emotion_text)
 
         emotion_window.append(emotion_text)
 
@@ -111,6 +132,10 @@ while True:
     cv2.imshow('window_frame', bgr_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+    curr_time = time.time()
+    print(f"Iteration duration: {curr_time-prev_time:2.2}sec")
+    prev_time = curr_time
     
 video_capture.release()
 cv2.destroyAllWindows()
