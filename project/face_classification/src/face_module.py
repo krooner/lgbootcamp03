@@ -31,11 +31,6 @@ IMG_SHAPE = tuple(input_details[0]['shape'][1:3])
 frame_window = 10
 emotion_offsets = (20, 40)
 
-# starting lists for calculating modes
-emotion_window = []
-
-detection_results = []
-first_detection_time = None
 
 def recognize_emotion(detection_duration=10.):
 
@@ -47,13 +42,24 @@ def recognize_emotion(detection_duration=10.):
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
+    first_detection_time = None
+    detection_results = []
+    emotion_window = []
+    
+    prev_time = time.time()
     while True:
     
         if first_detection_time != None:
             if time.time() - first_detection_time > detection_duration:
                 print("Emotion recognition complete.")
-                print(Counter(detection_results))
-                print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
+                try:
+                    most_freq_emotion = Counter(detection_results).most_common(1)[0][0]
+                    
+                    
+                    print(Counter(detection_results))
+                    print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
+                except IndexError as e:
+                    print("No result exists.")
                 break
 
         ret, bgr_image = camera.read()
@@ -123,9 +129,9 @@ def recognize_emotion(detection_duration=10.):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-        curr_time = time.time()
-        print(f"Iteration duration: {curr_time-prev_time:2.2}sec")
-        prev_time = curr_time
+        #curr_time = time.time()
+        #print(f"Iteration duration: {curr_time-prev_time:2.2}sec")
+        #prev_time = curr_time
     
     camera.release()
     cv2.destroyAllWindows()
