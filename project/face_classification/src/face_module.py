@@ -51,7 +51,7 @@ def recognize_emotion(detection_duration=10.):
     
         if first_detection_time != None:
             if time.time() - first_detection_time > detection_duration:
-                print("Detection complete.")
+                print("Emotion recognition complete.")
                 print(Counter(detection_results))
                 print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
                 break
@@ -68,6 +68,7 @@ def recognize_emotion(detection_duration=10.):
         for face_coordinates in faces:
             if first_detection_time == None: 
                 first_detection_time = time.time()
+                print(f"Face detected. Recognizing emotion for {detection_duration} seconds.")
 
             x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
             gray_face = gray_image[y1:y2, x1:x2]
