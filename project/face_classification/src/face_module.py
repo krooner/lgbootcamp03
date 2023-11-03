@@ -45,6 +45,8 @@ def recognize_emotion(detection_duration=10.):
     first_detection_time = None
     detection_results = []
     emotion_window = []
+
+    most_freq_emotion = None
     
     prev_time = time.time()
     while True:
@@ -136,4 +138,4 @@ def recognize_emotion(detection_duration=10.):
     camera.release()
     cv2.destroyAllWindows()
 
-    return
+    return most_freq_emotion

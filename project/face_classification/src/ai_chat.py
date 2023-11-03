@@ -5,9 +5,10 @@ from gtts import gTTS
 import pygame
 import os
 import sounddevice # 코드 내에는 안써도 이게 import 되어야 raspberry pi에서 에러가 안남
+from openai_api_key import api_key
 
 # API 키 설정
-openai.api_key = "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"
+openai.api_key = api_key
 
 # 음성 인식 객체
 r = sr.Recognizer()
@@ -56,7 +57,7 @@ def ask_gpt4(question):
 
 def ai_chat(emotion):
     # 사용자로부터 입력 받아 GPT-4에 질문하고 응답 출력
-    emotions = ["Angry", "Disgusted", "Fear", "Happy", "Sad", "Surprised", "Neutral"]
+    emotions = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
     emotions_kr = ["화나", "짜증나", "무서워", "행복해", "슬퍼", "놀라", "그저그래"]
     idx = emotions.index(emotion)
 
