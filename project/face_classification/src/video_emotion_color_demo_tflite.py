@@ -66,7 +66,8 @@ while True:
             continue
 
         gray_face = preprocess_input(gray_face, False)
-        gray_face = np.expand_dims(gray_face, axis=[0, -1])
+        gray_face = np.expand_dims(gray_face, axis=0)
+        gray_face = np.expand_dims(gray_face, axis=-1)
 
         interpreter.set_tensor(input_details[0]['index'], gray_face)
         interpreter.invoke()
