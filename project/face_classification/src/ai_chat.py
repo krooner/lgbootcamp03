@@ -6,6 +6,7 @@ import pygame
 import os
 import sounddevice # 코드 내에는 안써도 이게 import 되어야 raspberry pi에서 에러가 안남
 from openai_api_key import api_key
+import time
 
 # API 키 설정
 openai.api_key = api_key
@@ -62,48 +63,51 @@ def ai_chat(emotion):
     idx = emotions.index(emotion)
 
     # ChatGPT에게 역활 부여. 아래 문자열을 수정하면 말투가 바뀔 수 있음
-    gpt_role = "You are a kind and friendly counselor. You don't have to talk formally but use 존댓말. Please ask in short. If user seems like to end the chat, include '대화종료를 원하시면 대화종료라고 해보세요' at the end"
+    gpt_role = "You are a kind and friendly counselor. You don't have to talk formally but use 존댓말. Please reply in max of 2 sentences."
     start_with = f"I am currently {emotion}. Ask me what happened. Start like '오늘 {emotions_kr[idx]}보여요' with appropriate expression in Korean"
     first_input = [{"role": "system", "content": gpt_role + start_with}]
+    prev_time = time.time()
     response = ask_gpt4(first_input)
+    print("첫 응답 시간: ", time.time() - prev_time)
     print("GPT-4 응답:", response["content"])
     text_to_speech_and_play(response["content"])
 
-    user_input = [{"role": "system", "content": gpt_role}]
-
+    messages = [{"role": "system", "content": gpt_role}]
+  
     # while 문이 종료될때 까지 대화
     # while 문 종료 조건은 대화 상대가 "대화 종료"라고 말하기
     while True:
         with sr.Microphone() as source:
             print("음성 인식 시작")
             try:
-                audio = r.listen(source, timeout=5, phrase_time_limit=10)
+                audio = r.listen(source, timeout=3, phrase_time_limit=5)
             except sr.WaitTimeoutError:
                 print("Timeout: 음성 인식이 감지되지 않았습니다.")            
                 audio = None
             print("음성 인식 종료")
-
+        #audio = input("입력: ")
         if audio:
             try:
-                summarized = summarize(user_input)
+                prev_time = time.time()
+                # summarized = summarize(user_input)
+                print("요약 시간: ", time.time() - prev_time)
+                if len(messages) >= 6:
+                    messages = [messages[0]] + messages[len(messages)-4:]
+                prev_time = time.time()
                 new_input = r.recognize_google(audio, language='ko-KR')
+                #new_input = audio
+                print("recognition 시간: ", time.time() - prev_time)
                 print("당신의 질문: ", new_input)
                 # 대화 종료 로직
                 if ("대화종료" in new_input or "대화 종료" in new_input):
                     break
-                user_input = [
-                        {
-                            "role": "assistant",
-                            "content": summarized
-                        },
-                        {
-                            "role": "user",
-                            "content": new_input
-                        }
-                    ]
-                response = ask_gpt4(user_input)
+                messages.append({"role": "user", "content": new_input})
+                print(messages)
+                prev_time = time.time()
+                response = ask_gpt4(messages)
+                print("다음 답변  시간: ", time.time() - prev_time)
                 if response:
-                    user_input.append({"role": "system", "content": response})
+                    messages.append({"role": "system", "content": response["content"]})
                     print("GPT-4 응답:", response["content"])
                     text_to_speech_and_play(response["content"])
                 else:
