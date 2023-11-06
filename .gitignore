@@ -4,4 +4,6 @@
 deploy_data/
 *LAB*/
 
+
+*key*.py
 *.pyc
