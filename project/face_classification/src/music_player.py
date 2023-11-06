@@ -4,9 +4,9 @@ import pygame
 import time
 
 music_path = "../music/"
-pygame.mixer.init()
 
 def music_player(emotion):
+    pygame.mixer.init()
     # 음악이 저장된 폴더로 경로를 설정합니다.
     folder_path = os.path.join(music_path, emotion)
     
@@ -28,10 +28,7 @@ def music_player(emotion):
         pygame.mixer.music.play()
         
         # 재생 중지를 위한 입력 대기
-        input("Press 'Enter' to stop playing...")
-        time.sleep(10)
+        time.sleep(15)
         pygame.mixer.music.stop()
     else:
         print("No MP3 files found to play.")
-
-music_player("Angry")
