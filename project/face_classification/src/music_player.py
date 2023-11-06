@@ -28,10 +28,7 @@ def music_player(emotion):
         pygame.mixer.music.play()
         
         # 재생 중지를 위한 입력 대기
-        input("Press 'Enter' to stop playing...")
-        time.sleep(10)
+        time.sleep(15)
         pygame.mixer.music.stop()
     else:
         print("No MP3 files found to play.")
-
-music_player("Angry")

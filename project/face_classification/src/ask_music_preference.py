@@ -23,7 +23,7 @@ def text_to_speech_and_play(text):
     
     os.remove(output_filename)
 
-def chat_start(emotion):
+def ask_music_preference(emotion):
     emotions = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
     texts = [
         "화난 기분을 풀어줄 ",
@@ -70,5 +70,3 @@ def chat_start(emotion):
             except sr.RequestError:
                 print("서버 에러")
                 text_to_speech_and_play("서버에 문제가 있어요")
-
-chat_start("Happy")
