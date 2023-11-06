@@ -4,9 +4,9 @@ import pygame
 import time
 
 music_path = "../music/"
-pygame.mixer.init()
 
 def music_player(emotion):
+    pygame.mixer.init()
     # 음악이 저장된 폴더로 경로를 설정합니다.
     folder_path = os.path.join(music_path, emotion)
     
