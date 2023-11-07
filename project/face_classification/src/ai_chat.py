@@ -49,7 +49,7 @@ def text_to_speech_and_play(text):
 def ask_gpt4(question):
     try:
         completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo-1106",
             messages=question
         )
         return completion.choices[0].message
