@@ -1,5 +1,6 @@
 from statistics import mode
 import time
+import os
 import cv2
 import numpy as np
 import tflite_runtime.interpreter as tflite
@@ -32,7 +33,7 @@ frame_window = 10
 emotion_offsets = (20, 40)
 
 
-def recognize_emotion(detection_duration=10.):
+def recognize_emotion(detection_duration=10., before=True):
 
     # starting video streaming
     cv2.namedWindow('window_frame')
@@ -45,6 +46,9 @@ def recognize_emotion(detection_duration=10.):
     first_detection_time = None
     detection_results = []
     emotion_window = []
+
+    prob_sum = np.zeros(7)
+    each_prob_dict = dict()
 
     most_freq_emotion = None
     
@@ -62,6 +66,7 @@ def recognize_emotion(detection_duration=10.):
                     print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
                 except IndexError as e:
                     print("No result exists.")
+                    return None
                 break
 
         ret, bgr_image = camera.read()
@@ -92,6 +97,8 @@ def recognize_emotion(detection_duration=10.):
             interpreter.set_tensor(input_details[0]['index'], gray_face)
             interpreter.invoke()
             output_data = interpreter.get_tensor(output_details[0]['index'])
+
+            prob_sum += output_data.squeeze(0)
 
             emotion_probability = np.max(output_data)
             emotion_label_arg = np.argmax(output_data)
@@ -125,17 +132,25 @@ def recognize_emotion(detection_duration=10.):
             draw_bounding_box(face_coordinates, rgb_image, color)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                     color, 0, -45, 1, 1)
+            
 
         bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         cv2.imshow('window_frame', bgr_image)
+
+        each_prob_dict[emotion_text] = bgr_image
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-        #curr_time = time.time()
-        #print(f"Iteration duration: {curr_time-prev_time:2.2}sec")
-        #prev_time = curr_time
     
     camera.release()
     cv2.destroyAllWindows()
 
-    return most_freq_emotion
+
+    img_folder_dir = os.path.join(os.getcwd(), "../images")
+    if not os.path.exists(img_folder_dir):
+        os.mkdir(img_folder_dir)
+
+    cv2.imwrite(os.path.join(img_folder_dir, f"{'before' if before else 'after'}_{most_freq_emotion.lower()}_image.png"), each_prob_dict[most_freq_emotion]) 
+
+    # emotion, probabilities, image_of_emotion (save in advance)
+    return most_freq_emotion, prob_sum / len(detection_results) 
