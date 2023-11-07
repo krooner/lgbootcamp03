@@ -55,7 +55,7 @@ def ask_music_preference(emotion):
                 # new_input = audio
                 print("당신의 대답: ", new_input)
                 # 대화 종료 로직
-                if ("응" in new_input or "그래" in new_input or "네" in new_input):
+                if ("응" in new_input or "그래" in new_input or "네" in new_input or "틀어" in new_input):
                     return True
                 elif ("아니" in new_input or "괜찮아" in new_input or "아니오" in new_input):
                     return False
