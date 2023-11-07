@@ -2,6 +2,9 @@ import os
 from gtts import gTTS
 import pygame
 
+start_listening_file_loc = "../sounds/siri-sound-effect_start-listening.mp3"
+finish_listening_file_loc = "../sounds/siri-sound-effect_finish-listening.mp3"
+
 def text_to_speech_and_play(text):
     tts = gTTS(text=text, lang="ko", slow=False)
 
