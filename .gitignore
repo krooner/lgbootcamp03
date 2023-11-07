@@ -7,5 +7,9 @@
 deploy_data/
 *LAB*/
 
+music/
+images/
+__pycache__/
+
 
 *key*.py
