@@ -5,6 +5,7 @@ from gtts import gTTS
 import pygame
 import os
 import sounddevice # 코드 내에는 안써도 이게 import 되어야 raspberry pi에서 에러가 안남
+from speaker import text_to_speech_and_play, play_sound_effect, start_listening_file_loc, finish_listening_file_loc
 from openai_api_key import api_key
 
 # API 키 설정
@@ -12,25 +13,6 @@ openai.api_key = api_key
 
 # 음성 인식 객체
 r = sr.Recognizer()
-
-# text_to_speech 을 이용하여 mp3 파일로 변환하고 mp3 파일 재생 후 삭제
-def text_to_speech_and_play(text):
-    tts = gTTS(text=text, lang="ko", slow=False)
-
-    output_filename = "temp_output.mp3"
-    tts.save(output_filename)
-
-    pygame.mixer.init()
-    pygame.mixer.music.load(output_filename)
-    pygame.mixer.music.play()
-
-    while pygame.mixer.music.get_busy():
-        pygame.time.Clock().tick(10)
-    
-    pygame.mixer.music.stop()
-    pygame.mixer.quit()
-    
-    os.remove(output_filename)
 
 # 대화가 길어지면 그동안 했던 대화들을 요약해서 openai 서버에 전달
 # def summarize(answer):
@@ -78,12 +60,14 @@ def ai_chat(emotion, turn_count):
     # while 문 종료 조건은 대화 상대가 "대화 종료"라고 말하기
     while (turns):
         with sr.Microphone() as source:
+            play_sound_effect(start_listening_file_loc)
             print("음성 인식 시작")
             try:
                 audio = r.listen(source, timeout=3, phrase_time_limit=5)
             except sr.WaitTimeoutError:
                 print("Timeout: 음성 인식이 감지되지 않았습니다.")            
                 audio = None
+            play_sound_effect(finish_listening_file_loc)
             print("음성 인식 종료")
         #audio = input("입력: ")
         if audio:
