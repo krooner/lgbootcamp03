@@ -68,7 +68,7 @@ def ai_chat(emotion, turn_count):
     start_with = f"I am currently {emotion}. Ask me what happened. Start like '오늘 {emotions_kr[idx]}보여요' with appropriate expression in Korean"
     answer_briefly = "'condition': Please provide a reply within 30 tokens."
     first_input = [{"role": "system", "content": gpt_role + start_with}]
-    response = ask_gpt4(first_input)
+    response = ask_gpt(first_input)
     print("알스:", response["content"])
     text_to_speech_and_play(response["content"])
 
