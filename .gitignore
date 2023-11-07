@@ -1,9 +1,11 @@
 *.zip
 *.pdf
+*.mp3
+*.pyc
+*.png
 
 deploy_data/
 *LAB*/
 
 
 *key*.py
-*.pyc
