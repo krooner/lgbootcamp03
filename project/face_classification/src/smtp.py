@@ -4,12 +4,14 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from email_key import msg_from, msg_to, email_id, email_pw
+
 
 def send_email(emotion):
     message = MIMEMultipart()
     message['Subject'] = '사용자 감정: {emotion}'.format(emotion = emotion)
-    message['From'] = ''
-    message['To'] = ''
+    message['From'] = msg_from
+    message['To'] = msg_to
 
     content = """
         <html>
@@ -22,9 +24,6 @@ def send_email(emotion):
 
     mimetext = MIMEText(content,'html')
     message.attach(mimetext)
-
-    email_id = ''
-    email_pw = ''
 
     try:
         server = smtplib.SMTP('smtp.naver.com',587)
