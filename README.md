@@ -15,9 +15,9 @@
 ### Week 3: SW Project (1/2)
 |Day|10/30|10/31|11/1|11/2|11/3|
 |---|---|---|---|---|---|
-|**Topic**|SW E&P (1/2)|SW E&P (2/2)|Topic Discussion|||
+|**Topic**|SW E&P (1/2)|SW E&P (2/2)|Project Ideation|Environment Setting|Recognition Model Training|
 
 ### Week 4: SW Project (2/2)
 |Day|11/6|11/7|11/8|11/9|11/10|
 |---|---|---|---|---|---|
-|**Topic**||||||
+|**Topic**|1st Evaluation, AI Chatbot Implementation|Prototype|2nd Evaluation|Final Evaluation|Finish|
