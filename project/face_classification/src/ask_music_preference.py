@@ -36,7 +36,7 @@ def ask_music_preference(emotion):
     ]
     idx = emotions.index(emotion)
     text = texts[idx] + "노래를 틀어드릴까요?"
-    print("알쓰: " + text)
+    print("알스: " + text)
     text_to_speech_and_play(text)
     
     while True:

@@ -69,7 +69,7 @@ def ai_chat(emotion, turn_count):
     answer_briefly = "'condition': Please provide a reply within 30 tokens."
     first_input = [{"role": "system", "content": gpt_role + start_with}]
     response = ask_gpt4(first_input)
-    print("알쓰:", response["content"])
+    print("알스:", response["content"])
     text_to_speech_and_play(response["content"])
 
     messages = [{"role": "system", "content": gpt_role}]
@@ -103,7 +103,7 @@ def ai_chat(emotion, turn_count):
                 response = ask_gpt4(messages)
                 if response:
                     messages.append({"role": "system", "content": response["content"]})
-                    print("알쓰:", response["content"])
+                    print("알스:", response["content"])
                     text_to_speech_and_play(response["content"])
                     turns -= 1
                 else:
