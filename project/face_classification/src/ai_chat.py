@@ -44,8 +44,8 @@ def text_to_speech_and_play(text):
 
 #     return completion.choices[0].message.content
 
-# GPT-4 api를 이용하여 챗봇과 대화
-def ask_gpt4(question):
+# GPT-3.5 api를 이용하여 챗봇과 대화
+def ask_gpt(question):
     try:
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-1106",
@@ -100,7 +100,7 @@ def ai_chat(emotion, turn_count):
                 turn_message = "'last_turn': {}, ".format(False if turns > 1 else True)
                 msg = turn_message + "'message': " + new_input + ", " + answer_briefly
                 messages.append({"role": "user", "content": msg})
-                response = ask_gpt4(messages)
+                response = ask_gpt(messages)
                 if response:
                     messages.append({"role": "system", "content": response["content"]})
                     print("알스:", response["content"])
