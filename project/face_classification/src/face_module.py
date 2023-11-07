@@ -78,6 +78,7 @@ def recognize_emotion(detection_duration=10., before=True):
         rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
         faces = detect_faces(face_detection, gray_image)
 
+        emotion_text = None
         for face_coordinates in faces:
             if first_detection_time == None: 
                 first_detection_time = time.time()
@@ -137,7 +138,8 @@ def recognize_emotion(detection_duration=10., before=True):
         bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         cv2.imshow('window_frame', bgr_image)
 
-        each_prob_dict[emotion_text] = bgr_image
+        if emotion_text != None:
+            each_prob_dict[emotion_text] = bgr_image
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -150,7 +152,7 @@ def recognize_emotion(detection_duration=10., before=True):
     if not os.path.exists(img_folder_dir):
         os.mkdir(img_folder_dir)
 
-    cv2.imwrite(os.path.join(img_folder_dir, f"{'before' if before else 'after'}_{most_freq_emotion.lower()}_image.png"), each_prob_dict[most_freq_emotion]) 
+    cv2.imwrite(os.path.join(img_folder_dir, f"{'before' if before else 'after'}_image.png"), each_prob_dict[most_freq_emotion]) 
 
     # emotion, probabilities, image_of_emotion (save in advance)
     return most_freq_emotion, prob_sum / len(detection_results) 
