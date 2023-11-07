@@ -28,4 +28,4 @@ if __name__ == "__main__":
         Emotion before: {before_emotion}
         Emotion After: {after_emotion}
     """)
-    # send_email_emotion_statistics(before_emotion, before_emotion_prob, after_emotion, after_emotion_prob)
+    send_email_emotion_statistics(before_emotion, before_emotion_prob, after_emotion, after_emotion_prob)
