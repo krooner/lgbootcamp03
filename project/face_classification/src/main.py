@@ -3,6 +3,7 @@ from ask_music_preference import *
 from face_module import recognize_emotion
 from music_player import *
 from smtp import send_email_emotion, send_email_emotion_statistics
+import glob
 
 if __name__ == "__main__":
     before_emotion, before_emotion_prob = recognize_emotion(detection_duration=10., before=True)
@@ -23,9 +24,13 @@ if __name__ == "__main__":
 
     after_emotion, after_emotion_prob = recognize_emotion(detection_duration=10., before=False)
 
-    # TODO: send an email containing emotion statistics
+    # send an email containing emotion statistics
     print(f"""
         Emotion before: {before_emotion}
         Emotion After: {after_emotion}
     """)
     send_email_emotion_statistics(before_emotion, before_emotion_prob, after_emotion, after_emotion_prob)
+
+    # Remove all saved images
+    for file_loc in glob.glob(os.path.join(os.getcwd(), "../images/*.png")):
+        os.remove(file_loc)
