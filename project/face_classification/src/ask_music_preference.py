@@ -36,6 +36,7 @@ def ask_music_preference(emotion):
     ]
     idx = emotions.index(emotion)
     text = texts[idx] + "노래를 틀어드릴까요?"
+    print("알쓰: " + text)
     text_to_speech_and_play(text)
     
     while True:
@@ -53,11 +54,11 @@ def ask_music_preference(emotion):
             try:
                 new_input = r.recognize_google(audio, language='ko-KR')
                 # new_input = audio
-                print("당신의 대답: ", new_input)
+                print("사용자: ", new_input)
                 # 대화 종료 로직
                 if ("응" in new_input or "그래" in new_input or "네" in new_input or "틀어" in new_input):
                     return True
-                elif ("아니" in new_input or "괜찮아" in new_input or "아니오" in new_input):
+                elif ("아니" in new_input or "괜찮아" in new_input or "아니오" in new_input or "틀지마" in new_input):
                     return False
                 else:
                     print("다시 말씀해주세요")

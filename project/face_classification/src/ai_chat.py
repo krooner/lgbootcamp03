@@ -6,7 +6,6 @@ import pygame
 import os
 import sounddevice # 코드 내에는 안써도 이게 import 되어야 raspberry pi에서 에러가 안남
 from openai_api_key import api_key
-import time
 
 # API 키 설정
 openai.api_key = api_key
@@ -69,10 +68,8 @@ def ai_chat(emotion, turn_count):
     start_with = f"I am currently {emotion}. Ask me what happened. Start like '오늘 {emotions_kr[idx]}보여요' with appropriate expression in Korean"
     answer_briefly = "'condition': Please provide a reply within 30 tokens."
     first_input = [{"role": "system", "content": gpt_role + start_with}]
-    prev_time = time.time()
     response = ask_gpt4(first_input)
-    print("첫 응답 시간: ", time.time() - prev_time)
-    print("GPT-4 응답:", response["content"])
+    print("알쓰:", response["content"])
     text_to_speech_and_play(response["content"])
 
     messages = [{"role": "system", "content": gpt_role}]
@@ -91,29 +88,22 @@ def ai_chat(emotion, turn_count):
         #audio = input("입력: ")
         if audio:
             try:
-                prev_time = time.time()
                 # summarized = summarize(user_input)
-                print("요약 시간: ", time.time() - prev_time)
                 if len(messages) >= 6:
                     messages = [messages[0]] + messages[len(messages)-4:]
-                prev_time = time.time()
                 new_input = r.recognize_google(audio, language='ko-KR')
                 #new_input = audio
-                print("recognition 시간: ", time.time() - prev_time)
-                print("당신의 질문: ", new_input)
+                print("사용자: ", new_input)
                 # 대화 종료 로직
                 if ("대화종료" in new_input or "대화 종료" in new_input):
                     break
                 turn_message = "'last_turn': {}, ".format(False if turns > 1 else True)
                 msg = turn_message + "'message': " + new_input + ", " + answer_briefly
                 messages.append({"role": "user", "content": msg})
-                print(messages)
-                prev_time = time.time()
                 response = ask_gpt4(messages)
-                print("다음 답변  시간: ", time.time() - prev_time)
                 if response:
                     messages.append({"role": "system", "content": response["content"]})
-                    print("GPT-4 응답:", response["content"])
+                    print("알쓰:", response["content"])
                     text_to_speech_and_play(response["content"])
                     turns -= 1
                 else:
