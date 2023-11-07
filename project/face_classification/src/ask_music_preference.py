@@ -3,6 +3,9 @@ from gtts import gTTS
 import pygame
 import os
 
+start_listening_file_loc = "../sounds/siri-sound-effect_start-listening.mp3"
+finish_listening_file_loc = "../sounds/siri-sound-effect_finish-listening.mp3"
+
 r = sr.Recognizer()
 
 def text_to_speech_and_play(text):
@@ -23,6 +26,18 @@ def text_to_speech_and_play(text):
     
     os.remove(output_filename)
 
+def play_sound_effect(filename):
+    pygame.mixer.init()
+    pygame.mixer.music.load(filename)
+    pygame.mixer.music.play()
+
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
+    
+    pygame.mixer.music.stop()
+    pygame.mixer.quit()
+    return 
+
 def ask_music_preference(emotion):
     emotions = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
     texts = [
@@ -41,12 +56,14 @@ def ask_music_preference(emotion):
     
     while True:
         with sr.Microphone() as source:
+            play_sound_effect(start_listening_file_loc)
             print("음성 인식 시작")
             try:
                 audio = r.listen(source, timeout=3, phrase_time_limit=5)
             except sr.WaitTimeoutError:
                 print("Timeout: 음성 인식이 감지되지 않았습니다.")            
                 audio = None
+            play_sound_effect(finish_listening_file_loc)
             print("음성 인식 종료")
         # audio = input("입력: ")
 
