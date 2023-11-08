@@ -14,6 +14,9 @@ emotion_model_path = "../trained_models/aihub_trans_aug.tflite"
 emotion_labels = {
     0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'
 }
+enko_dict = {
+    'Angry': "화남", 'Disgust': "짜증남", 'Fear': "무서움", 'Happy': "행복함", 'Sad': "슬픔", 'Surprise': "놀람", 'Neutral': "무표정"
+}
 
 # loading face detection model
 face_detection = load_detection_model(detection_model_path)
@@ -51,19 +54,17 @@ def recognize_emotion(detection_duration=10., before=True):
     each_prob_dict = dict()
 
     most_freq_emotion = None
-    
-    prev_time = time.time()
+
     while True:
     
         if first_detection_time != None:
             if time.time() - first_detection_time > detection_duration:
-                print("Emotion recognition complete.")
+                print("감정 인식 완료.")
                 try:
                     most_freq_emotion = Counter(detection_results).most_common(1)[0][0]
-                    
-                    
-                    print(Counter(detection_results))
-                    print(f"The most frequent emotion is [{Counter(detection_results).most_common(1)[0][0]}].")
+
+                    # print(Counter(detection_results))
+                    print(f"사용자의 주된 감정은 '{enko_dict[Counter(detection_results).most_common(1)[0][0]]}' 입니다.")
                 except IndexError as e:
                     print("No result exists.")
                     return None
@@ -83,7 +84,7 @@ def recognize_emotion(detection_duration=10., before=True):
         for face_coordinates in faces:
             if first_detection_time == None: 
                 first_detection_time = time.time()
-                print(f"Face detected. Recognizing emotion for {detection_duration} seconds.")
+                print(f"최초 얼굴 감지. {int(detection_duration)}초간 감정 인식 실행 중...")
 
             x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
             gray_face = gray_image[y1:y2, x1:x2]
@@ -105,7 +106,7 @@ def recognize_emotion(detection_duration=10., before=True):
             emotion_probability = np.max(output_data)
             emotion_label_arg = np.argmax(output_data)
             emotion_text = emotion_labels[emotion_label_arg]
-            print(emotion_text)
+            # print(emotion_text)
             
             detection_results.append(emotion_text)
 
