@@ -25,6 +25,7 @@ def ask_music_preference(emotion):
     while True:
         with sr.Microphone() as source:
             play_sound_effect(start_listening_file_loc)
+            print()
             print("음성 인식 시작")
             try:
                 audio = r.listen(source, timeout=3, phrase_time_limit=5)
@@ -33,26 +34,25 @@ def ask_music_preference(emotion):
                 audio = None
             play_sound_effect(finish_listening_file_loc)
             print("음성 인식 종료")
-        # audio = input("입력: ")
+            print()
 
         if audio:
             try:
                 new_input = r.recognize_google(audio, language='ko-KR')
-                # new_input = audio
                 print("사용자: ", new_input)
                 # 대화 종료 로직
                 if ("응" in new_input or "그래" in new_input or "네" in new_input or "틀어" in new_input):
                     return True
-                elif ("아니" in new_input or "괜찮아" in new_input or "아니오" in new_input or "틀지마" in new_input):
+                elif ("아니" in new_input or "괜찮아" in new_input or "틀지마" in new_input):
                     return False
                 else:
-                    print("다시 말씀해주세요")
+                    print("알피: 다시 말씀해주세요")
                     text_to_speech_and_play("다시 말씀해주세요")
             # 말을 이해 못했을 때 에러
             except sr.UnknownValueError:
-                print("알아듣지 못했어요")
+                print("알피: 알아듣지 못했어요")
                 text_to_speech_and_play("알아듣지 못했어요")
             # 서버 에러
             except sr.RequestError:
-                print("서버 에러")
+                print("알피: 서버에 문제가 있어요")
                 text_to_speech_and_play("서버에 문제가 있어요")

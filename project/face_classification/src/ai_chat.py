@@ -14,18 +14,6 @@ openai.api_key = api_key
 # 음성 인식 객체
 r = sr.Recognizer()
 
-# 대화가 길어지면 그동안 했던 대화들을 요약해서 openai 서버에 전달
-# def summarize(answer):
-#     completion = openai.ChatCompletion.create(
-#         model="gpt-3.5-turbo",
-#         messages=[{
-#             'role': 'user',
-#             'content': f'이 내용 한국어로 한 문장으로 요약해줘 ###\n{answer}\n###'
-#         }],
-#     )
-
-#     return completion.choices[0].message.content
-
 # GPT-3.5 api를 이용하여 챗봇과 대화
 def ask_gpt(question):
     try:
@@ -61,6 +49,7 @@ def ai_chat(emotion, turn_count):
     while (turns):
         with sr.Microphone() as source:
             play_sound_effect(start_listening_file_loc)
+            print()
             print("음성 인식 시작")
             try:
                 audio = r.listen(source, timeout=3, phrase_time_limit=5)
@@ -69,14 +58,14 @@ def ai_chat(emotion, turn_count):
                 audio = None
             play_sound_effect(finish_listening_file_loc)
             print("음성 인식 종료")
-        #audio = input("입력: ")
+            print()
+
         if audio:
             try:
-                # summarized = summarize(user_input)
                 if len(messages) >= 6:
                     messages = [messages[0]] + messages[len(messages)-4:]
                 new_input = r.recognize_google(audio, language='ko-KR')
-                #new_input = audio
+
                 print("사용자: ", new_input)
                 # 대화 종료 로직
                 if ("대화종료" in new_input or "대화 종료" in new_input):
@@ -91,13 +80,13 @@ def ai_chat(emotion, turn_count):
                     text_to_speech_and_play(response["content"])
                     turns -= 1
                 else:
-                    print("오류가 발생했습니다. 다시 말씀 해주세요.")
+                    print("알피: 오류가 발생했습니다. 다시 말씀 해주세요.")
                     text_to_speech_and_play("오류가 발생했습니다. 다시 말씀 해주세요.")
             # 말을 이해 못했을 때 에러
             except sr.UnknownValueError:
-                print("알아듣지 못했어요")
+                print("알피: 알아듣지 못했어요")
                 text_to_speech_and_play("알아듣지 못했어요")
             # 서버 에러
             except sr.RequestError:
-                print("서버 에러")
+                print("알피: 서버에 문제가 있어요")
                 text_to_speech_and_play("서버에 문제가 있어요")
