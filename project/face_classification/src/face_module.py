@@ -9,7 +9,7 @@ from utils.inference import detect_faces, draw_text, draw_bounding_box, apply_of
 from utils.preprocessor import preprocess_input
 
 detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
-emotion_model_path = "../trained_models/aihub_trans_aug.tflite"
+emotion_model_path = "../trained_models/aihub_aug.tflite"
 
 emotion_labels = {
     0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'
