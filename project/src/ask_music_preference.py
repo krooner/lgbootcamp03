@@ -18,7 +18,7 @@ def ask_music_preference(emotion):
         "평소에 듣기 좋은"
     ]
     idx = emotions.index(emotion)
-    text = texts[idx] + "노래를 틀어드릴까요?"
+    text = texts[idx] + "노래를 틀어드릴까요? 음악 감상을 원하시면 '그래.', 대화를 원하시면 '아니.'라고 말씀해주세요."
     print("알피: " + text)
     text_to_speech_and_play(text)
     
